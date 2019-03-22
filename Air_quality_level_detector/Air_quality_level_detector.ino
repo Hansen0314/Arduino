@@ -37,9 +37,6 @@
 #else
   #define SERIAL Serial
 #endif
-
-#define DEBUG          1
-
 #define PIN            6
 #define NUMPIXELS      20
 #define NOMAL_LEVEL    8
@@ -120,8 +117,6 @@ void setup()
     SERIAL.begin(115200);
     delay(100);
     SERIAL.println("Serial start");
-    
-#if !DEBUG
     if(sensor.init())
     {
         SERIAL.println("HM330X init failed!!!");
@@ -135,22 +130,19 @@ void setup()
     PM_Base_Date = buf[13];   //PM2.5 environment value
     SERIAL.println("PM_Base_Date:");
     SERIAL.println(PM_Base_Date);
-#endif
     pixels.setBrightness(200);
     pixels.begin(); // This initializes the NeoPixel library.
 }
 
 
-
 void loop()
 {
-#if !DEBUG
-    if(SERIAL.read_sensor_value(buf,29))
-    {
-        SERIAL.println("HM330X read result failed!!!");
-    }
-    Now_Numpixels = buf[13]-PM_Base_Date;
-#else 
+  if(sensor.read_sensor_value(buf,29))
+  {
+      SERIAL.println("HM330X read result failed!!!");
+  }
+  Now_Numpixels = buf[13]-PM_Base_Date;  
+
   if(SERIAL.available())
   {
     Now_Numpixels = SERIAL.read()-48;
@@ -163,8 +155,8 @@ void loop()
    SERIAL.println(" ");
    SERIAL.println(" ");
    SERIAL.println(" ");  
-#endif    
-    
+   SERIAL.println("PM_Base_Date:");
+   SERIAL.println(PM_Base_Date);
     
     if(Now_Numpixels < 0) Now_Numpixels = 0;
     else if(Now_Numpixels > DANGER_LEVEL) Now_Numpixels = DANGER_LEVEL;

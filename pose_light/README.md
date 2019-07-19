@@ -8,19 +8,25 @@
 
 主控制选择的是[Seeeduino Nano](https://www.seeedstudio.com/Seeeduino-Nano-p-4111.html) 之所以选择它就是因为它小而且便宜。当然，为了更方便接线，直接购买[Grove Shield for Arduino Nano](https://www.seeedstudio.com/Grove-Shield-for-Arduino-Nano-p-4112.html)也是一个很好的选择。
 
+![](https://github.com/hansonCc/Arduino/raw/master/pose_light/DOC/Grove%20Shield%20for%20Arduino%20Nano.png)
+
 ### Grove - 3-Axis Digital Accelerometer ±200g (ADXL372)
 
 [Grove - 3-Axis Digital Accelerometer ±200g (ADXL372)](https://www.seeedstudio.com/Grove-3-Axis-Digital-Accelerometer-200g-ADXL372-p-4003.html)是一种超低功耗数字输出MEMS加速度计，它可以提供100位/ LSB比例因子的12位输出。该传感器最显着的特点是其超低功耗（测量模式下仅为22μA）和大测量范围(±200g)。所有数据都通过Grove I2C端口输出,i2C地址可以更改。为了满足更广泛的测量需求，采样率可以选择400Hz/ 800Hz/1600Hz/3200Hz/6400Hz，带宽可以选择200Hz/400Hz/800Hz/1600Hz/3200Hz。除了用作加速度测量之外，您还可以使用此模块进行冲击和冲击检测。所以选用它来检测姿势灯的姿势是非常合适的。
 
-[图片]
+![](https://github.com/hansonCc/Arduino/raw/master/pose_light/DOC/3-Axis%20Digital%20Accelerometer.png)
 
 ### Grove - RGB LED Ring (20 - WS2813 Mini)
 
 为了达到良好的灯效，我选择了[The Grove - RGB LED Ring (20 - WS2813 Mini)](http://wiki.seeedstudio.com/Grove-LED_ring)，因为每个LED都有一个恒定电流驱动器，因此即使电压发生变化，颜色也会非常一致。这样灯效就会变的很合适。
 
+![](https://github.com/hansonCc/Arduino/raw/master/pose_light/DOC/Grove%20-%20RGB%20LED%20Ring.jpg)
+
 ### Li-po Rider
 
 Seeeduino Nano 支持5V供电 ，但是为了使姿势灯方便携带显然一直使用电脑USB供电是一个不太合适的选择，这里我们选用[Li-po Rider](https://www.seeedstudio.com/Li-po-Rider-p-710.html)来解决这个问题。
+
+![](https://github.com/hansonCc/Arduino/raw/master/pose_light/DOC/Li-po%20Rider.jpg)
 
 ## 软件设计
 
@@ -74,6 +80,7 @@ void Led_Control(uint32_t Led_num,uint32_t Color,bool Switch)
 
 最终经过半天的时间我搭建好整体硬件连接，硬件的整体连接如下图：
 
+![](https://github.com/hansonCc/Arduino/raw/master/pose_light/DOC/Overall%20connection%20diagram.jpg)
 
 这是一个非常需要想象力的事情，显然我对3D外壳设计就显得更加的理性化一点，所以还请为各位对于3D外壳的设计少做一些评价。
 

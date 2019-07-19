@@ -79,6 +79,7 @@ err_t parse_result(u8 *data)
     for(int i=1;i<8;i++)
     {
          value = (u16)data[i*2]<<8|data[i*2+1];
+         if(value > 200) value = 200; 
          print_result(str[i-1],value);
     }
 }
@@ -130,18 +131,24 @@ void setup()
     PM_Base_Date = buf[13];   //PM2.5 environment value
     SERIAL.println("PM_Base_Date:");
     SERIAL.println(PM_Base_Date);
-    pixels.setBrightness(200);
+    pixels.setBrightness(150);
     pixels.begin(); // This initializes the NeoPixel library.
+    for(int i=0;i<20;i++)
+    {
+      pixels.Color(0,0,0);
+      pixels.show(); // This sends the updated pixel color to the hardware.
+      delay(50); // Delay for a period of time (in milliseconds).
+  }    
 }
 
 
 void loop()
 {
+  
   if(sensor.read_sensor_value(buf,29))
   {
       SERIAL.println("HM330X read result failed!!!");
   }
-  Now_Numpixels = buf[13]-PM_Base_Date;  
 
   if(SERIAL.available())
   {
@@ -150,42 +157,43 @@ void loop()
     SERIAL.print(Now_Numpixels);
     SERIAL.print(" ");
   }
-   parse_result_value(buf);
-   parse_result(buf);
-   SERIAL.println(" ");
-   SERIAL.println(" ");
-   SERIAL.println(" ");  
-   SERIAL.println("PM_Base_Date:");
-   SERIAL.println(PM_Base_Date);
+  if(buf[13] > 70) buf[13] = 70;
+  Now_Numpixels = buf[13]-PM_Base_Date;  
+  parse_result_value(buf);
+  parse_result(buf);
+  SERIAL.println(" ");
+  SERIAL.println(" ");
+  SERIAL.println(" ");  
+  SERIAL.println("PM_Base_Date:");
+  SERIAL.println(PM_Base_Date);
     
-    if(Now_Numpixels < 0) Now_Numpixels = 0;
-    else if(Now_Numpixels > DANGER_LEVEL) Now_Numpixels = DANGER_LEVEL;
-	
-	
-    if((float)(Now_Numpixels - Numpixels) > 0)
-    {
-          for(int i=0;i<Now_Numpixels;i++)
-          {
-          
-          // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
-          if(i < NOMAL_LEVEL) pixels.setPixelColor(i, pixels.Color(0,150,0)); // Moderately bright green color.
-          else if(i < WARNNING_LEVEL) pixels.setPixelColor(i, pixels.Color(150,150,0));
-          else if(i < DANGER_LEVEL)pixels.setPixelColor(i, pixels.Color(150,0,0));
-          pixels.show(); // This sends the updated pixel color to the hardware.
-          delay(50); // Delay for a period of time (in milliseconds).
-          
-        }
-    }
-    else if ((float)(Now_Numpixels - Numpixels) < 0)
-    {
-        for(int i=Numpixels;i>=Now_Numpixels;i--)
-        {        
-            pixels.setPixelColor(i, pixels.Color(0,0,0)); // Moderately bright green color.
-            pixels.show(); // This sends the updated pixel color to the hardware.
-            delay(50); // Delay for a period of time (in milliseconds). 
-        }
-    }
-    Numpixels = Now_Numpixels;
-    
+  if(Now_Numpixels < 0) Now_Numpixels = 0;
+  else if(Now_Numpixels > DANGER_LEVEL) Now_Numpixels = DANGER_LEVEL;
   
+  if((float)(Now_Numpixels - Numpixels) > 0)
+  {
+        for(int i=0;i<Now_Numpixels;i++)
+        {
+        
+        // pixels.Color takes RGB values, from 0,0,0 up to 255,255,255
+        if(i < NOMAL_LEVEL) pixels.setPixelColor(i, pixels.Color(0,150,0)); // Moderately bright green color.
+        else if(i < WARNNING_LEVEL) pixels.setPixelColor(i, pixels.Color(150,150,0));
+        else if(i < DANGER_LEVEL)pixels.setPixelColor(i, pixels.Color(150,0,0));
+        pixels.show(); // This sends the updated pixel color to the hardware.
+        delay(50); // Delay for a period of time (in milliseconds).
+        
+      }
+  }
+  else if ((float)(Now_Numpixels - Numpixels) < 0)
+  {
+      for(int i=Numpixels;i>=Now_Numpixels;i--)
+      {        
+          pixels.setPixelColor(i, pixels.Color(0,0,0)); // Moderately bright green color.
+          pixels.show(); // This sends the updated pixel color to the hardware.
+          delay(50); // Delay for a period of time (in milliseconds). 
+      }
+  }
+  Numpixels = Now_Numpixels;
+  delay(3000);  
+   
 }

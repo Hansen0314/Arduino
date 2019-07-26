@@ -105,7 +105,7 @@ void setup() {
   strip.begin();
   strip.setPixelColor(10, strip.Color(0, 150, 0));
   strip.show(); // Initialize all pixels to 'off'
-  strip.setBrightness(100);
+  strip.setBrightness(200);
   
   acc.begin();
   SERIAL.begin(115200);

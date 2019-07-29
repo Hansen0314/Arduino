@@ -93,5 +93,3 @@ We use a 3D printer to print the case, the lampshade I use the green shell, the 
 ![](https://github.com/hansonCc/Arduino/raw/master/Posture_Control_Night_Light_with_Change_Color_and_Count%20Down_Functions/DOC/lampshade.png)
 
 Here is the [video](https://youtu.be/uKnyLhN5KsQ)
-
-

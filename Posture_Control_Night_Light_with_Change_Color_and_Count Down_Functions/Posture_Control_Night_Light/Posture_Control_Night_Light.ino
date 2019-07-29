@@ -19,8 +19,12 @@ unsigned char Led_State;
 #define LED_ON     1
 #define LED_DELAY_5S_OFF 2
 #define LED_DELAY_10S_OFF 3
+#define LED_DELAY_15S_OFF 4
+#define LED_DELAY_20S_OFF 5
 #define DELAY_5S 5*1000
 #define DELAY_10S 10*1000
+#define DELAY_15S 15*1000
+#define DELAY_20S 20*1000
 #define LED_COUNT 20
 
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
@@ -62,9 +66,9 @@ void Led_Control(uint32_t Led_num,uint32_t Color,bool Switch)
 void calibration(void)
 {
 
-	SERIAL.println("Please Place the module horizontally!");
-	delay(1000);
-	SERIAL.println("Start calibration........");
+  SERIAL.println("Please Place the module horizontally!");
+  delay(1000);
+  SERIAL.println("Start calibration........");
     uint16_t j;
     uint16_t samples = acc.samples_in_fifo();
     // To ensure that data is not overwritten and stored out of order, 
@@ -93,10 +97,10 @@ void calibration(void)
      Serial.println(xyz_acc.y);
      xyz_acc.z = xyz_acc.z * 6.0 / j;
      Serial.println(xyz_acc.z);    
-		cali_buf[0] = xyz_acc.x;
-		cali_buf[1] = xyz_acc.y;
-		cali_buf[2] = xyz_acc.z-10;
-	  SERIAL.println("Calibration OK!!");
+    cali_buf[0] = xyz_acc.x;
+    cali_buf[1] = xyz_acc.y;
+    cali_buf[2] = xyz_acc.z-10;
+    SERIAL.println("Calibration OK!!");
     }
 }
 
@@ -187,19 +191,34 @@ void loop() {
       }
       else if((abs(xyz_acc.x) > abs(xyz_acc.y))&&(abs(xyz_acc.x) > abs(xyz_acc.z)))
       {
-        
-        SERIAL.println(" x ");
-        if(Led_State != LED_DELAY_5S_OFF) Delay_Ms = 0;
-        Led_State = LED_DELAY_5S_OFF;
+        if(xyz_acc.x > 0)
+        {
+          SERIAL.println(" x ");
+          if(Led_State != LED_DELAY_5S_OFF) Delay_Ms = 0;
+          Led_State = LED_DELAY_5S_OFF;
+        }
+        else 
+        {
+          SERIAL.println(" -x ");
+          if(Led_State != LED_DELAY_15S_OFF) Delay_Ms = 0;
+          Led_State = LED_DELAY_15S_OFF;   
+        }
         
       }
       else if((abs(xyz_acc.y) > abs(xyz_acc.z))&&(abs(xyz_acc.y) > abs(xyz_acc.x)))
       {
-        
-          SERIAL.println(" y ");
-          if(Led_State != LED_DELAY_10S_OFF) Delay_Ms = 0;
-          Led_State = LED_DELAY_10S_OFF;
-
+          if(xyz_acc.y >0)
+          {
+            SERIAL.println(" y ");
+            if(Led_State != LED_DELAY_10S_OFF) Delay_Ms = 0;
+            Led_State = LED_DELAY_10S_OFF;
+          }
+          else
+          {
+            SERIAL.println(" -y ");
+            if(Led_State != LED_DELAY_20S_OFF) Delay_Ms = 0;
+            Led_State = LED_DELAY_20S_OFF;   
+          }
       }
   }
   switch(Led_State)
@@ -238,6 +257,7 @@ void loop() {
       
     break;
     case LED_DELAY_10S_OFF:
+    
       if(Delay_Ms == 0)
       {
         
@@ -258,7 +278,53 @@ void loop() {
           Led_Control(LED_COUNT,Led_Colour,0);
       }
       
-    break;    
+    break;   
+    case LED_DELAY_15S_OFF:
+    
+      if(Delay_Ms == 0)
+      {
+        
+        Led_Control(LED_COUNT,Led_Colour,1);
+        Delay_Init = millis();
+        Delay_Ms = 1;
+        
+      }
+      else if (Delay_Ms < DELAY_15S)
+      {
+        
+        Delay_Ms = millis() - Delay_Init;
+        SERIAL.println(" y State");
+        
+      }
+      else
+      {
+          Led_Control(LED_COUNT,Led_Colour,0);
+      }
+      
+    break;  
+    case LED_DELAY_20S_OFF:
+    
+      if(Delay_Ms == 0)
+      {
+        
+        Led_Control(LED_COUNT,Led_Colour,1);
+        Delay_Init = millis();
+        Delay_Ms = 1;
+        
+      }
+      else if (Delay_Ms < DELAY_20S)
+      {
+        
+        Delay_Ms = millis() - Delay_Init;
+        SERIAL.println(" y State");
+        
+      }
+      else
+      {
+          Led_Control(LED_COUNT,Led_Colour,0);
+      }
+      
+    break; 
   }
   
   delay(100);
